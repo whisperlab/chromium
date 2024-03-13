@@ -70,4 +70,4 @@ jobs:
         run: npm install --prefix _/amazon/handlers puppeteer-core --bin-links=false --fund=false --omit=optional --omit=dev --package-lock=false --save=false
 
       - name: Invoke Lambda on SAM
-        run: sam local invoke --template _/amazon/template.yml --event _/amazon/events/${{ matrix.event }}.json node${{ matrix.version }} 2>&1 | (grep 'Error' && exit 1 || exit 0)
+        run: sam local invoke --template _/amazon/template.yml --event _/amazon/events/${{ matrix.event }}.json node${{ matrix.version }} 2>&1 > /tmp/run.result; echo /tmp/run.result; cat /tmp/run.result; cat /tmp/run.result | tail -1 | (grep 'errorType' && exit 1 || exit 0)
