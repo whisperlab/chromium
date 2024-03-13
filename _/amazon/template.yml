@@ -9,7 +9,7 @@ Resources:
   layer:
     Type: AWS::Serverless::LayerVersion
     Properties:
-      LayerName: sparticuz-chromium
+      LayerName: whisperlab-chromium
       ContentUri: code/
       CompatibleRuntimes:
         - nodejs16.x
@@ -25,8 +25,8 @@ Resources:
       Runtime: nodejs16.x
       Policies:
         - AWSLambdaBasicExecutionRole
-        - AWSXRayDaemonWriteAccess
-      Tracing: Active
+        #- AWSXRayDaemonWriteAccess
+      #Tracing: Active
   node18:
     Type: AWS::Serverless::Function
     Properties:
@@ -36,8 +36,8 @@ Resources:
       Runtime: nodejs18.x
       Policies:
         - AWSLambdaBasicExecutionRole
-        - AWSXRayDaemonWriteAccess
-      Tracing: Active
+        #- AWSXRayDaemonWriteAccess
+      #Tracing: Active
   node20:
     Type: AWS::Serverless::Function
     Properties:
@@ -47,5 +47,5 @@ Resources:
       Runtime: nodejs20.x
       Policies:
         - AWSLambdaBasicExecutionRole
-        - AWSXRayDaemonWriteAccess
-      Tracing: Active
+        #- AWSXRayDaemonWriteAccess
+      #Tracing: Active
