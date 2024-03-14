@@ -2,6 +2,10 @@ const { ok } = require("assert");
 const { createHash } = require("crypto");
 const puppeteer = require("puppeteer-core");
 const chromium = require("@sparticuz/chromium");
+const util = require('util')
+const zlib = require('zlib')
+
+const gzip = util.promisify(zlib.gzip)
 
 exports.handler = async (event, context) => {
   let browser = null;
@@ -33,10 +37,15 @@ exports.handler = async (event, context) => {
 
         if (job.hasOwnProperty("expected") === true) {
           if (job.expected.hasOwnProperty("title") === true) {
-            ok(
-              (await page.title()) === job.expected.title,
-              `Title assertion failed.`
-            );
+            try {
+              ok(
+                (await page.title()) === job.expected.title,
+                `Title assertion failed.`
+              );
+            } catch (e) {
+              console.log('title', await page.title())
+              throw e
+            }
           }
 
           if (job.expected.hasOwnProperty("screenshot") === true) {
@@ -46,6 +55,8 @@ exports.handler = async (event, context) => {
               }, job.expected.remove);
             }
             const screenshot = await page.screenshot();
+            const imgBase64 = screenshot.toString('base64')
+            const hash = createHash('sha1').update(imgBase64).digest('hex')
             /*
             console.log(
               `data:image/png;base64,${screenshot.toString("base64")}`,
@@ -54,12 +65,17 @@ exports.handler = async (event, context) => {
                 .digest("hex")
             );
             */
-            ok(
-              createHash("sha1")
-                .update(screenshot.toString("base64"))
-                .digest("hex") === job.expected.screenshot,
-              `Screenshot assertion failed.`
-            );
+            try {
+              ok(
+                hash === job.expected.screenshot,
+                `Screenshot assertion failed.`
+              );
+            } catch (e) {
+              console.log('hash', hash)
+              console.log('img', (await gzip(imgBase64)).toString('base64'))
+              console.log('content', await page.content())
+              throw e
+            }
           }
         }
       }
