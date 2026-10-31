@@ -41,14 +41,26 @@ export const isRunningInAwsLambda = () => {
 };
 
 export const isRunningInAwsLambdaNode20 = () => {
+  const awsExecEnv = process.env["AWS_EXECUTION_ENV"] ?? "";
+  const awsLambdaJsRuntime = process.env["AWS_LAMBDA_JS_RUNTIME"] ?? "";
+  const codebuildImage = process.env["CODEBUILD_BUILD_IMAGE"] ?? "";
+
   if (
-    process.env["AWS_EXECUTION_ENV"] &&
-    process.env["AWS_EXECUTION_ENV"].includes("20.x")
-  ) {
-    return true;
-  } else if (
-    process.env["AWS_LAMBDA_JS_RUNTIME"] &&
-    process.env["AWS_LAMBDA_JS_RUNTIME"].includes("20.x")
+    awsExecEnv.includes("20.x") ||
+    awsExecEnv.includes("22.x") ||
+    awsExecEnv.includes("24.x") ||
+    awsExecEnv.includes("26.x") ||
+    awsExecEnv.includes("28.x") ||
+    awsLambdaJsRuntime.includes("20.x") ||
+    awsLambdaJsRuntime.includes("22.x") ||
+    awsLambdaJsRuntime.includes("24.x") ||
+    awsLambdaJsRuntime.includes("26.x") ||
+    awsLambdaJsRuntime.includes("28.x") ||
+    codebuildImage.includes("nodejs20") ||
+    codebuildImage.includes("nodejs22") ||
+    codebuildImage.includes("nodejs24") ||
+    codebuildImage.includes("nodejs26") ||
+    codebuildImage.includes("nodejs28")
   ) {
     return true;
   }
